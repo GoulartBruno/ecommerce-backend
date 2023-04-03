@@ -1,93 +1,89 @@
--- Active: 1681672585275@@127.0.0.1@3306
+-- Active: 1681755901689@@127.0.0.1@3306
 
-CREATE TABLE users (     
-id TEXT PRIMARY KEY UNIQUE NOT NULL,
-name TEXT UNIQUE NOT NULL,
- email TEXT UNIQUE NOT NULL,   
- password TEXT NOT NULL,
- created_at TEXT DEFAULT (DATETIME()) NOT NULL
- );
+CREATE TABLE users (
+  id TEXT PRIMARY KEY UNIQUE NOT NULL,
+  name TEXT UNIQUE NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  created_at TEXT DEFAULT (DATETIME()) NOT NULL
+);
 
+INSERT INTO users(id, name, email, password)
+VALUES ('001', 'bruno', 'bruno@email.com', '01C02'),
+       ('002', 'joao', 'joao@email.com', '0jk00'),
+       ('003', 'roberto', 'roberto@email.com', 'asd142');
 
- INSERT INTO users(id,name, email, password)
-VALUES ("001", "bruno","bruno@email.com", "01C02"),
-("002","joao", "joao@email.com", "0jk00"),
-("003","roberto", "roberto@email.com", "asd142");
-
-INSERT INTO users (id,name, email, password)
-VALUES ("004","pedro", "pedro@email.com", "01478");
+INSERT INTO users(id, name, email, password)
+VALUES ('004', 'pedro', 'pedro@email.com', '01478');
 
 SELECT * FROM users;
 
 --Get All Users
- SELECT * FROM users
- ORDER BY email ASC;
-
+SELECT * FROM users
+ORDER BY email ASC;
 
 --Get User by id
 SELECT * FROM users
-WHERE id = "001";
+WHERE id = '001';
 
 -- Delete User by id
 DELETE FROM users
-WHERE id = "001";
+WHERE id = '001';
 
 -- Edit User by id
 UPDATE users
-SET id = "novoUser"
-WHERE id = "002";
-
+SET id = 'novoUser'
+WHERE id = '002';
 
 -- Criação da tabela de pedidos
 CREATE TABLE purchases (
-  id TEXT PRIMARY KEY UNIQUE NOT NULL ,
+  id TEXT PRIMARY KEY UNIQUE NOT NULL,
   total_price REAL NOT NULL,
-  paid INTEGER NOT NULL DEFAULT 0, -- A coluna paid será utilizada para guardar uma lógica booleana. O SQLite recomenda o uso do número 0 para false e 1 para true. Os pedidos começam com paid valendo 0.
-  delivered_at TEXT DEFAULT (DATETIME()) NOT NULL, -- A coluna delivered_at será utilizada para gerenciar a data de entrega do pedido. Ela é opcional, porque sempre começará sem valor ao criar um pedido, ou seja, null.
+  paid BOOLEAN NOT NULL DEFAULT 0,
+  delivered_at TEXT DEFAULT (DATETIME()) NOT NULL,
   buyer_id TEXT NOT NULL,
   created_at TEXT DEFAULT (DATETIME()) NOT NULL,
-  FOREIGN KEY (buyer_id) REFERENCES users (id)  
+  FOREIGN KEY (buyer_id) REFERENCES users (id)
 );
 
-INSERT INTO purchases (id, total_price,buyer_id)
-VALUES ("P01", 299,  "003" ),
-("P02", 10,  "001"),
-("P03", 20,  "002"),
-("P04", 19, "003"),
-("P05", 125, "001");
+INSERT INTO purchases (id, total_price, buyer_id)
+VALUES ('P01', 299, '003'),
+       ('P02', 10, '001'),
+       ('P03', 20, '002'),
+       ('P04', 19, '003'),
+       ('P05', 125, '001');
 
 SELECT * FROM purchases;
 
 SELECT * FROM purchases
-WHERE buyer_id = "003";
+WHERE buyer_id = '003';
 
 SELECT * FROM purchases;
 
 SELECT * FROM purchases
-INNER JOIN users
-ON buyer_id = users.id
-WHERE users.id = "003";
+INNER JOIN users ON buyer_id = users.id
+WHERE users.id = '003';
 
 SELECT * FROM users
-INNER JOIN purchases 
-ON purchases.buyer_id = users.id;
+INNER JOIN purchases ON purchases.buyer_id = users.id;
 
 UPDATE purchases
 SET delivered_at = DATETIME('now')
-WHERE id = "P01";
+WHERE id = 'P01';
 
 UPDATE purchases
 SET delivered_at = DATETIME('now')
-WHERE id = "P02";
+WHERE id = 'P02';
 
-CREATE TABLE products ( 
-id TEXT PRIMARY KEY UNIQUE NOT NULL,
- name TEXT  NOT NULL,   
- price REAL NOT NULL,
- description TEXT NOT NULL,
- category TEXT NOT NULL,
- imageUrl TEXT NOT NULL
- );
+CREATE TABLE products (
+  id TEXT PRIMARY KEY UNIQUE NOT NULL,
+  name TEXT NOT NULL,
+  price REAL NOT NULL,
+  description TEXT NOT NULL,
+  category TEXT NOT NULL,
+  imageUrl TEXT NOT NULL
+);
+
 
 INSERT INTO products(id, name, price, description, category, imageUrl)
 VALUES ("001", "Vestido Midi Estampado", 149.90, "Descrição do produto aqui", "Clothes", "imagem"),
@@ -97,19 +93,18 @@ VALUES ("001", "Vestido Midi Estampado", 149.90, "Descrição do produto aqui", 
 ("005", "Bota Coturno de Couro", 399.90, "Descrição do produto aqui", "Shoes", "imagem"),
 ("006", "Sandália Anabela de Juta", 149.90, "Descrição do produto aqui", "Shoes", "imagem"),
 ("007", "Brinco de Argola Grande", 59.90, "Descrição do produto aqui", "Accessories", "imagem"),
-("008", "Colar de Pérolas", 89.90, "Descrição do produto aqui", "Accessories", "imagem"),
-("009", "Óculos de Sol Redondo", 129.90, "Descrição do produto aqui", "Accessories", "imagem");
+("008", "Colar de Pérolas", 89.90, "Descrição do produto aqui", "Accessories", "imagem");
 
 
 SELECT * FROM products;
 
---Get All Products VERSÃO 1
+--Get All Products 1
  SELECT * FROM products
  ORDER BY price ASC
  LIMIT 20
  OFFSET 1;
 
- --Get All Products VERSÃO 2
+ --Get All Products 2
  SELECT * FROM products
  WHERE price > 90 AND price < 200 
  ORDER BY price ASC;
