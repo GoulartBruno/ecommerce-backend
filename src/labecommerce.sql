@@ -117,7 +117,7 @@ ORDER BY price ASC;
 
 
 drop TABLE purchases;
-
+--cria tabela purchases
 CREATE Table purchases (
   id TEXT PRIMARY KEY UNIQUE NOT NULL,
   total_price REAL NOT NULL,
@@ -127,8 +127,6 @@ CREATE Table purchases (
   FOREIGN KEY (buyer_id) REFERENCES users(id)
   );
 
-
-DROP TABLE purchases;
 
 INSERT INTO purchases(id, total_price, buyer_id)
 VALUES
@@ -148,8 +146,36 @@ UPDATE purchases
    SET created_at = (DATETIME("now"))
  WHERE id IN ("p001");
 
-
+--mostra os dados das duas tabelas
 SELECT * FROM users
 INNER JOIN purchases
 ON purchases.buyer_id = users.id
 WHERE buyer_id ="01";
+
+
+--Criação da tabela de relações
+CREATE TABLE purchases_products (
+  purchase_id  TEXT NOT NULL,
+  product_id  TEXT NOT NULL,
+  quantity INTEGER NOT NULL,
+  FOREIGN KEY (purchase_id) REFERENCES purchases (id)
+  FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+
+--Popule sua tabela purchases_products simulando 3 compras de clientes.
+INSERT INTO purchases_products (purchase_id, product_id, quantity)
+VALUES
+("p001","a003", 2),
+("p002","a001", 5),
+("p003","a004", 4);
+
+--Mostre em uma query todas as colunas das tabelas relacionadas (purchases_products, purchases e products).
+SELECT * FROM purchases_products
+INNER JOIN products ON purchases_products.product_id = products.id
+INNER JOIN purchases ON purchases_products.purchase_id=purchases.id;
+
+
+DROP TABLE purchases_products;
+
+SELECT * FROM purchases
