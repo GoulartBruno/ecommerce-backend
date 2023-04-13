@@ -5,7 +5,7 @@
 CREATE Table users (
   id TEXT PRIMARY KEY UNIQUE NOT NULL,
   email TEXT UNIQUE NOT NULL,
-  password TEXT
+  password TEXT NOT NULL
   );
 
 
@@ -112,4 +112,44 @@ LIMIT 20 OFFSET 2;
 --retorna os produtos com preços dentro do intervalo definido em ordem crescente
 SELECT * FROM products
 WHERE "price" > 10 AND  "price" <20
-ORDER BY price ASC
+ORDER BY price ASC;
+
+
+
+drop TABLE purchases;
+
+CREATE Table purchases (
+  id TEXT PRIMARY KEY UNIQUE NOT NULL,
+  total_price REAL NOT NULL,
+  paid  INTEGER NOT NULL DEFAULT 0,
+  created_at  TEXT DEFAULT (DATETIME()) NOT NULL,
+  buyer_id TEXT NOT NULL,
+  FOREIGN KEY (buyer_id) REFERENCES users(id)
+  );
+
+
+DROP TABLE purchases;
+
+INSERT INTO purchases(id, total_price, buyer_id)
+VALUES
+("p001", 215, "01"),
+("p002", 101, "03"),
+("p003", 87,  "01"),
+("p004", 41,  "03"),
+("p005", 125, "04"),
+("p006", 75,  "02"),
+("p007", 65,  "04"),
+("p008", 33,  "02");
+
+
+
+--Simule que o pedido foi entregue no exato momento da sua edição (ou seja, data atual).
+UPDATE purchases 
+   SET created_at = (DATETIME("now"))
+ WHERE id IN ("p001");
+
+
+SELECT * FROM users
+INNER JOIN purchases
+ON purchases.buyer_id = users.id
+WHERE buyer_id ="01";
